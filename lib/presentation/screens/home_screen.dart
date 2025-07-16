@@ -26,15 +26,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
-    
-    // Load user's recent history
+
+    // O carregamento dos dados principais já é feito no construtor do MovieProvider.
+    // Aqui, só precisamos carregar dados específicos do usuário, como o histórico.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final movieProvider = Provider.of<MovieProvider>(context, listen: false);
-      
+
       if (authProvider.currentUser != null) {
         movieProvider.loadRecentHistory(authProvider.currentUser!.id!);
       }
+
+      // Opcional: se quiser ter um "puxar para atualizar"
+      // movieProvider.refresh();
     });
   }
 
@@ -91,23 +95,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: _isSearching
             ? TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: l10n.search_placeholder,
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(
-                    color: theme.colorScheme.onSurface.withOpacity(0.6),
-                  ),
-                ),
-                style: TextStyle(color: theme.colorScheme.onSurface),
-                onChanged: _onSearchChanged,
-                autofocus: true,
-              )
+          controller: _searchController,
+          decoration: InputDecoration(
+            hintText: l10n.search_placeholder,
+            border: InputBorder.none,
+            hintStyle: TextStyle(
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
+            ),
+          ),
+          style: TextStyle(color: theme.colorScheme.onSurface),
+          onChanged: _onSearchChanged,
+          autofocus: true,
+        )
             : Text(l10n.app_name),
         actions: [
           IconButton(
@@ -160,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           if (_isSearching && _searchController.text.isNotEmpty) {
             return _buildSearchResults(movieProvider, l10n);
           }
-          
+
           return Column(
             children: [
               // User greeting and recent history
@@ -193,30 +197,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             isLoading: movieProvider.isLoading,
                             onMovieTap: _onMovieTap,
                           ),
-                          FutureBuilder<List<Movie>>(
-                            future: movieProvider.getMoviesByGenre(
-                              AppConstants.movieGenres['action']!,
-                            ),
-                            builder: (context, snapshot) {
-                              return MovieList(
-                                movies: snapshot.data ?? [],
-                                isLoading: snapshot.connectionState == ConnectionState.waiting,
-                                onMovieTap: _onMovieTap,
-                              );
-                            },
+                          // --- MODIFICADO ---
+                          // Substituímos o FutureBuilder problemático
+                          MovieList(
+                            movies: movieProvider.actionMovies,
+                            isLoading: movieProvider.isLoading,
+                            onMovieTap: _onMovieTap,
                           ),
-                          FutureBuilder<List<Movie>>(
-                            future: movieProvider.getMoviesByGenre(
-                              AppConstants.movieGenres['comedy']!,
-                            ),
-                            builder: (context, snapshot) {
-                              return MovieList(
-                                movies: snapshot.data ?? [],
-                                isLoading: snapshot.connectionState == ConnectionState.waiting,
-                                onMovieTap: _onMovieTap,
-                              );
-                            },
+                          MovieList(
+                            movies: movieProvider.comedyMovies,
+                            isLoading: movieProvider.isLoading,
+                            onMovieTap: _onMovieTap,
                           ),
+                          // --------------------
                         ],
                       ),
                     ),
@@ -368,12 +361,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     // Add to history
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final movieProvider = Provider.of<MovieProvider>(context, listen: false);
-    
+
     if (authProvider.currentUser != null) {
       movieProvider.addToHistory(authProvider.currentUser!.id!, movie);
     }
-    
+
     // Navigate to movie detail
     context.go('/movie/${movie.id}');
   }
-} 
+}

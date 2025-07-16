@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String tmdbApiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI3MmFiNjE3ZWM4NzQyNjFjNmUwZDVmYzgwZmJiYTk3MyIsIm5iZiI6MTcxMDM3MjU0My4wNjIsInN1YiI6IjY1ZjIzNmJmZmJlMzZmMDE4NWVmZTFhOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.DehvOWdRyfvipAZBqK1z43QtwpcM89bpMUXOG9O6nQQ';
+  static const String tmdbApiKey = 'f32d65809fe49819cbb0c9691ee6987a';
   static const String pexelsApiKey = 'Ii4GbNTTJzHt85FKWBfNKeueXMJiQD5HPeBYRm2KUdUfAGzJ5U4JP6nf';
   static const String baseUrl = 'https://api.themoviedb.org/3';
   static const String imageBaseUrl = 'https://image.tmdb.org/t/p/w500';

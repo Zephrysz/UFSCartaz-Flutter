@@ -2,18 +2,25 @@ import 'package:flutter/material.dart';
 import '../../data/models/movie.dart';
 import '../../data/models/movie_history_entry.dart';
 import '../../data/repositories/movie_repository.dart';
+import '../../core/constants/app_constants.dart'; // Importe suas constantes
 
 class MovieProvider extends ChangeNotifier {
   final MovieRepository _movieRepository;
-  
+
   List<Movie> _popularMovies = [];
   List<Movie> _topRatedMovies = [];
   List<Movie> _nowPlayingMovies = [];
   List<Movie> _upcomingMovies = [];
+  // --- ADICIONADO ---
+  // Listas para armazenar o estado dos filmes por gênero
+  List<Movie> _actionMovies = [];
+  List<Movie> _comedyMovies = [];
+  // --------------------
+
   List<Movie> _searchResults = [];
   List<MovieHistoryEntry> _recentHistory = [];
   Movie? _selectedMovie;
-  
+
   bool _isLoading = false;
   bool _isLoadingDetails = false;
   bool _isSearching = false;
@@ -21,6 +28,7 @@ class MovieProvider extends ChangeNotifier {
   String _searchQuery = '';
 
   MovieProvider(this._movieRepository) {
+    // _loadInitialData já é chamado aqui, o que é ótimo.
     _loadInitialData();
   }
 
@@ -32,7 +40,12 @@ class MovieProvider extends ChangeNotifier {
   List<Movie> get searchResults => _searchResults;
   List<MovieHistoryEntry> get recentHistory => _recentHistory;
   Movie? get selectedMovie => _selectedMovie;
-  
+
+  // --- ADICIONADO ---
+  List<Movie> get actionMovies => _actionMovies;
+  List<Movie> get comedyMovies => _comedyMovies;
+  // --------------------
+
   bool get isLoading => _isLoading;
   bool get isLoadingDetails => _isLoadingDetails;
   bool get isSearching => _isSearching;
@@ -41,12 +54,18 @@ class MovieProvider extends ChangeNotifier {
 
   Future<void> _loadInitialData() async {
     _setLoading(true);
-    
+
     try {
+      // Usamos Future.wait para carregar tudo em paralelo, o que é eficiente.
       await Future.wait([
         loadPopularMovies(),
         loadTopRatedMovies(),
         loadNowPlayingMovies(),
+        // --- ADICIONADO ---
+        // Carrega os filmes por gênero junto com os dados iniciais
+        loadMoviesByGenre(AppConstants.movieGenres['action']!, 'action'),
+        loadMoviesByGenre(AppConstants.movieGenres['comedy']!, 'comedy'),
+        // --------------------
       ]);
     } catch (e) {
       _error = e.toString();
@@ -99,6 +118,39 @@ class MovieProvider extends ChangeNotifier {
     }
   }
 
+  // --- ADICIONADO ---
+  // Novo método para carregar filmes por gênero e armazenar no estado.
+  Future<void> loadMoviesByGenre(int genreId, String category) async {
+    try {
+      final movies = await _movieRepository.getMoviesByGenre(genreId);
+      if (category == 'action') {
+        _actionMovies = movies;
+      } else if (category == 'comedy') {
+        _comedyMovies = movies;
+      }
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+    }
+  }
+  // --------------------
+
+  // --- REMOVIDO ---
+  // O método antigo é removido para evitar o anti-padrão de chamá-lo no FutureBuilder.
+  /*
+  Future<List<Movie>> getMoviesByGenre(int genreId) async {
+    try {
+      return await _movieRepository.getMoviesByGenre(genreId);
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return [];
+    }
+  }
+  */
+  // -----------------
+
   // Search movies
   Future<void> searchMovies(String query) async {
     if (query.isEmpty) {
@@ -110,7 +162,7 @@ class MovieProvider extends ChangeNotifier {
 
     _setSearching(true);
     _searchQuery = query;
-    
+
     try {
       _searchResults = await _movieRepository.searchMovies(query);
       notifyListeners();
@@ -125,7 +177,7 @@ class MovieProvider extends ChangeNotifier {
   // Get movie details
   Future<void> getMovieDetails(int movieId) async {
     _setLoadingDetails(true);
-    
+
     try {
       _selectedMovie = await _movieRepository.getMovieDetails(movieId);
       notifyListeners();
@@ -134,17 +186,6 @@ class MovieProvider extends ChangeNotifier {
       notifyListeners();
     } finally {
       _setLoadingDetails(false);
-    }
-  }
-
-  // Get movies by genre
-  Future<List<Movie>> getMoviesByGenre(int genreId) async {
-    try {
-      return await _movieRepository.getMoviesByGenre(genreId);
-    } catch (e) {
-      _error = e.toString();
-      notifyListeners();
-      return [];
     }
   }
 
@@ -208,4 +249,4 @@ class MovieProvider extends ChangeNotifier {
     _isSearching = searching;
     notifyListeners();
   }
-} 
+}

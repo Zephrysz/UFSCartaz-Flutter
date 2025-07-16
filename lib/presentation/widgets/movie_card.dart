@@ -15,7 +15,7 @@ class MovieCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Card(
       clipBehavior: Clip.antiAlias,
       shape: RoundedRectangleBorder(
@@ -26,12 +26,10 @@ class MovieCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Movie poster
-            AspectRatio(
-              aspectRatio: 2 / 3,
+            Expanded(
               child: CachedNetworkImage(
                 imageUrl: movie.fullPosterUrl,
-                fit: BoxFit.cover,
+                fit: BoxFit.cover, // BoxFit.cover garante que a imagem preencha o espaço sem distorcer
                 placeholder: (context, url) => Container(
                   color: theme.colorScheme.surface,
                   child: const Center(
@@ -75,7 +73,7 @@ class MovieCard extends StatelessWidget {
                   // Rating
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.star,
                         color: Colors.amber,
                         size: 16,
@@ -97,4 +95,4 @@ class MovieCard extends StatelessWidget {
       ),
     );
   }
-} 
+}
