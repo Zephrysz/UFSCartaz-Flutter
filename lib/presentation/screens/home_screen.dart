@@ -7,7 +7,6 @@ import '../providers/movie_provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/movie_list.dart';
 import '../../data/models/movie.dart';
-import '../../l10n/generated/app_localizations.dart';
 import '../../core/constants/app_constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,10 +24,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
 
-    // O carregamento dos dados principais já é feito no construtor do MovieProvider.
-    // Aqui, só precisamos carregar dados específicos do usuário, como o histórico.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final movieProvider = Provider.of<MovieProvider>(context, listen: false);
@@ -36,9 +33,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       if (authProvider.currentUser != null) {
         movieProvider.loadRecentHistory(authProvider.currentUser!.id!);
       }
-
-      // Opcional: se quiser ter um "puxar para atualizar"
-      // movieProvider.refresh();
     });
   }
 
@@ -71,12 +65,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        backgroundColor: const Color(0xFF2D2D2D),
+        title: const Text('Logout', style: TextStyle(color: Colors.white)),
+        content: const Text('Are you sure you want to logout?', style: TextStyle(color: Colors.white)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: const Text('Cancel', style: TextStyle(color: Colors.white70)),
           ),
           TextButton(
             onPressed: () {
@@ -84,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Provider.of<AuthProvider>(context, listen: false).logout();
               context.go('/welcome');
             },
-            child: const Text('Logout'),
+            child: const Text('Logout', style: TextStyle(color: Color(0xFFE53E3E))),
           ),
         ],
       ),
@@ -93,112 +88,111 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
+        backgroundColor: const Color(0xFF1A1A1A),
+        elevation: 0,
         title: _isSearching
             ? TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: l10n.search_placeholder,
-            border: InputBorder.none,
-            hintStyle: TextStyle(
-              color: theme.colorScheme.onSurface.withOpacity(0.6),
-            ),
-          ),
-          style: TextStyle(color: theme.colorScheme.onSurface),
-          onChanged: _onSearchChanged,
-          autofocus: true,
-        )
-            : Text(l10n.app_name),
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  hintText: 'Para você, Lucas',
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(color: Colors.white70),
+                ),
+                style: const TextStyle(color: Colors.white),
+                onChanged: _onSearchChanged,
+                autofocus: true,
+              )
+            : Consumer<AuthProvider>(
+                builder: (context, authProvider, child) {
+                  return Text(
+                    'Para você, ${authProvider.currentUser?.name ?? 'Lucas'}',
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                  );
+                },
+              ),
         actions: [
           IconButton(
-            icon: Icon(_isSearching ? Icons.close : Icons.search),
+            icon: Icon(
+              _isSearching ? Icons.close : Icons.search,
+              color: Colors.white,
+            ),
             onPressed: _toggleSearch,
           ),
-          Consumer<ThemeProvider>(
-            builder: (context, themeProvider, child) {
-              return IconButton(
-                icon: Icon(
-                  themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              return GestureDetector(
+                onTap: _logout,
+                child: Container(
+                  margin: const EdgeInsets.only(right: 16),
+                  child: CircleAvatar(
+                    radius: 18,
+                    backgroundColor: const Color(0xFFE53E3E),
+                    child: authProvider.currentUser?.avatarUrl != null
+                        ? ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl: authProvider.currentUser!.avatarUrl!,
+                              fit: BoxFit.cover,
+                              width: 36,
+                              height: 36,
+                              placeholder: (context, url) => const Icon(
+                                Icons.person,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              errorWidget: (context, url, error) => const Icon(
+                                Icons.person,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          )
+                        : const Icon(
+                            Icons.person,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                  ),
                 ),
-                onPressed: () => themeProvider.toggleTheme(),
               );
             },
           ),
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              switch (value) {
-                case 'logout':
-                  _logout();
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'logout',
-                child: Text('Logout'),
-              ),
-            ],
-            child: Consumer<AuthProvider>(
-              builder: (context, authProvider, child) {
-                return CircleAvatar(
-                  radius: 16,
-                  backgroundImage: authProvider.currentUser?.avatarUrl != null
-                      ? CachedNetworkImageProvider(authProvider.currentUser!.avatarUrl!)
-                      : null,
-                  child: authProvider.currentUser?.avatarUrl == null
-                      ? const Icon(Icons.person, size: 20)
-                      : null,
-                );
-              },
-            ),
-          ),
-          const SizedBox(width: 8),
         ],
       ),
       body: Consumer<MovieProvider>(
         builder: (context, movieProvider, child) {
           if (_isSearching && _searchController.text.isNotEmpty) {
-            return _buildSearchResults(movieProvider, l10n);
+            return _buildSearchResults(movieProvider);
           }
 
           return Column(
             children: [
-              // User greeting and recent history
-              _buildUserSection(l10n, theme),
+              // Featured movie section
+              _buildFeaturedSection(movieProvider),
               // Movie categories
               Expanded(
                 child: Column(
                   children: [
-                    TabBar(
-                      controller: _tabController,
-                      isScrollable: true,
-                      tabs: [
-                        Tab(text: l10n.popular_movies),
-                        Tab(text: l10n.movies_title),
-                        Tab(text: l10n.category_action),
-                        Tab(text: l10n.category_comedy),
-                      ],
+                    Container(
+                      color: const Color(0xFF1A1A1A),
+                      child: TabBar(
+                        controller: _tabController,
+                        labelColor: const Color(0xFFE53E3E),
+                        unselectedLabelColor: Colors.white70,
+                        indicatorColor: const Color(0xFFE53E3E),
+                        tabs: const [
+                          Tab(text: 'Documentários'),
+                          Tab(text: 'Comédia'),
+                          Tab(text: 'Drama'),
+                        ],
+                      ),
                     ),
                     Expanded(
                       child: TabBarView(
                         controller: _tabController,
                         children: [
-                          MovieList(
-                            movies: movieProvider.popularMovies,
-                            isLoading: movieProvider.isLoading,
-                            onMovieTap: _onMovieTap,
-                          ),
-                          MovieList(
-                            movies: movieProvider.topRatedMovies,
-                            isLoading: movieProvider.isLoading,
-                            onMovieTap: _onMovieTap,
-                          ),
-                          // --- MODIFICADO ---
-                          // Substituímos o FutureBuilder problemático
                           MovieList(
                             movies: movieProvider.actionMovies,
                             isLoading: movieProvider.isLoading,
@@ -209,7 +203,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             isLoading: movieProvider.isLoading,
                             onMovieTap: _onMovieTap,
                           ),
-                          // --------------------
+                          MovieList(
+                            movies: movieProvider.topRatedMovies,
+                            isLoading: movieProvider.isLoading,
+                            onMovieTap: _onMovieTap,
+                          ),
                         ],
                       ),
                     ),
@@ -223,126 +221,139 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildUserSection(AppLocalizations l10n, ThemeData theme) {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
-        return Consumer<MovieProvider>(
-          builder: (context, movieProvider, child) {
-            return Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildFeaturedSection(MovieProvider movieProvider) {
+    if (movieProvider.isLoading) {
+      return Container(
+        height: 200,
+        color: const Color(0xFF1A1A1A),
+        child: const Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFFE53E3E),
+          ),
+        ),
+      );
+    }
+
+    if (movieProvider.popularMovies.isEmpty) {
+      return Container(
+        height: 200,
+        color: const Color(0xFF1A1A1A),
+        child: const Center(
+          child: Text(
+            'No movies available',
+            style: TextStyle(color: Colors.white70),
+          ),
+        ),
+      );
+    }
+
+    final featuredMovie = movieProvider.popularMovies.first;
+    return Container(
+      height: 300,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: CachedNetworkImageProvider(
+            '${AppConstants.imageBaseUrl}${featuredMovie.backdropPath ?? featuredMovie.posterPath}',
+          ),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              Colors.black.withOpacity(0.8),
+            ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                featuredMovie.title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                featuredMovie.overview,
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 16),
+              Row(
                 children: [
-                  // User greeting
-                  Text(
-                    l10n.home_greeting(authProvider.currentUser?.name ?? l10n.default_user_name),
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
+                  ElevatedButton(
+                    onPressed: () => _onMovieTap(featuredMovie),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFE53E3E),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
+                    child: const Text('Assistir'),
                   ),
-                  const SizedBox(height: 16),
-                  // Recent history
-                  if (movieProvider.recentHistory.isNotEmpty) ...[
-                    Text(
-                      l10n.recently_viewed,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                  const SizedBox(width: 12),
+                  OutlinedButton(
+                    onPressed: () => _onMovieTap(featuredMovie),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.white),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      height: 120,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: movieProvider.recentHistory.length,
-                        itemBuilder: (context, index) {
-                          final historyEntry = movieProvider.recentHistory[index];
-                          return Container(
-                            width: 80,
-                            margin: const EdgeInsets.only(right: 8),
-                            child: GestureDetector(
-                              onTap: () => _onMovieTap(Movie(
-                                id: historyEntry.movieId,
-                                title: historyEntry.movieTitle,
-                                originalTitle: historyEntry.movieTitle,
-                                overview: '',
-                                posterPath: historyEntry.moviePosterPath,
-                                backdropPath: null,
-                                releaseDate: '',
-                                voteAverage: 0.0,
-                                voteCount: 0,
-                                adult: false,
-                                genreIds: [],
-                                video: null,
-                                popularity: 0.0,
-                                originalLanguage: '',
-                              )),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: CachedNetworkImage(
-                                        imageUrl: historyEntry.fullPosterUrl,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) => Container(
-                                          color: theme.colorScheme.surface,
-                                          child: const Center(
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        ),
-                                        errorWidget: (context, url, error) => Container(
-                                          color: theme.colorScheme.surface,
-                                          child: const Icon(Icons.movie),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    historyEntry.movieTitle,
-                                    style: theme.textTheme.bodySmall,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
+                    child: const Text('Mais info'),
+                  ),
                 ],
               ),
-            );
-          },
-        );
-      },
+            ],
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _buildSearchResults(MovieProvider movieProvider, AppLocalizations l10n) {
+  Widget _buildSearchResults(MovieProvider movieProvider) {
     if (movieProvider.isSearching) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xFFE53E3E),
+        ),
+      );
     }
 
     if (movieProvider.searchResults.isEmpty && movieProvider.searchQuery.isNotEmpty) {
-      return Center(
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.search_off,
               size: 64,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              color: Colors.white70,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
             Text(
-              l10n.search_no_results(movieProvider.searchQuery),
-              style: Theme.of(context).textTheme.titleLarge,
+              'Nenhum resultado encontrado',
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 18,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -358,7 +369,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _onMovieTap(Movie movie) {
-    // Add to history
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final movieProvider = Provider.of<MovieProvider>(context, listen: false);
 
@@ -366,7 +376,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       movieProvider.addToHistory(authProvider.currentUser!.id!, movie);
     }
 
-    // Navigate to movie detail
     context.go('/movie/${movie.id}');
   }
 }

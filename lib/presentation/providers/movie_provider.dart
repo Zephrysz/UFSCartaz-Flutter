@@ -54,20 +54,28 @@ class MovieProvider extends ChangeNotifier {
 
   Future<void> _loadInitialData() async {
     _setLoading(true);
+    _error = null;
 
     try {
-      // Usamos Future.wait para carregar tudo em paralelo, o que é eficiente.
+      print('MovieProvider: Starting to load initial data...');
+      
+      // Load movies in parallel
       await Future.wait([
         loadPopularMovies(),
         loadTopRatedMovies(),
         loadNowPlayingMovies(),
-        // --- ADICIONADO ---
-        // Carrega os filmes por gênero junto com os dados iniciais
         loadMoviesByGenre(AppConstants.movieGenres['action']!, 'action'),
         loadMoviesByGenre(AppConstants.movieGenres['comedy']!, 'comedy'),
-        // --------------------
       ]);
+      
+      print('MovieProvider: Successfully loaded initial data');
+      print('Popular movies: ${_popularMovies.length}');
+      print('Top rated movies: ${_topRatedMovies.length}');
+      print('Action movies: ${_actionMovies.length}');
+      print('Comedy movies: ${_comedyMovies.length}');
+      
     } catch (e) {
+      print('MovieProvider: Error loading initial data: $e');
       _error = e.toString();
     } finally {
       _setLoading(false);
@@ -77,9 +85,12 @@ class MovieProvider extends ChangeNotifier {
   // Load popular movies
   Future<void> loadPopularMovies() async {
     try {
+      print('MovieProvider: Loading popular movies...');
       _popularMovies = await _movieRepository.getPopularMovies();
+      print('MovieProvider: Loaded ${_popularMovies.length} popular movies');
       notifyListeners();
     } catch (e) {
+      print('MovieProvider: Error loading popular movies: $e');
       _error = e.toString();
       notifyListeners();
     }
@@ -88,9 +99,12 @@ class MovieProvider extends ChangeNotifier {
   // Load top rated movies
   Future<void> loadTopRatedMovies() async {
     try {
+      print('MovieProvider: Loading top rated movies...');
       _topRatedMovies = await _movieRepository.getTopRatedMovies();
+      print('MovieProvider: Loaded ${_topRatedMovies.length} top rated movies');
       notifyListeners();
     } catch (e) {
+      print('MovieProvider: Error loading top rated movies: $e');
       _error = e.toString();
       notifyListeners();
     }
@@ -99,9 +113,12 @@ class MovieProvider extends ChangeNotifier {
   // Load now playing movies
   Future<void> loadNowPlayingMovies() async {
     try {
+      print('MovieProvider: Loading now playing movies...');
       _nowPlayingMovies = await _movieRepository.getNowPlayingMovies();
+      print('MovieProvider: Loaded ${_nowPlayingMovies.length} now playing movies');
       notifyListeners();
     } catch (e) {
+      print('MovieProvider: Error loading now playing movies: $e');
       _error = e.toString();
       notifyListeners();
     }
@@ -110,19 +127,24 @@ class MovieProvider extends ChangeNotifier {
   // Load upcoming movies
   Future<void> loadUpcomingMovies() async {
     try {
+      print('MovieProvider: Loading upcoming movies...');
       _upcomingMovies = await _movieRepository.getUpcomingMovies();
+      print('MovieProvider: Loaded ${_upcomingMovies.length} upcoming movies');
       notifyListeners();
     } catch (e) {
+      print('MovieProvider: Error loading upcoming movies: $e');
       _error = e.toString();
       notifyListeners();
     }
   }
 
-  // --- ADICIONADO ---
-  // Novo método para carregar filmes por gênero e armazenar no estado.
+  // Load movies by genre
   Future<void> loadMoviesByGenre(int genreId, String category) async {
     try {
+      print('MovieProvider: Loading $category movies (genre: $genreId)...');
       final movies = await _movieRepository.getMoviesByGenre(genreId);
+      print('MovieProvider: Loaded ${movies.length} $category movies');
+      
       if (category == 'action') {
         _actionMovies = movies;
       } else if (category == 'comedy') {
@@ -130,11 +152,11 @@ class MovieProvider extends ChangeNotifier {
       }
       notifyListeners();
     } catch (e) {
+      print('MovieProvider: Error loading $category movies: $e');
       _error = e.toString();
       notifyListeners();
     }
   }
-  // --------------------
 
   // --- REMOVIDO ---
   // O método antigo é removido para evitar o anti-padrão de chamá-lo no FutureBuilder.

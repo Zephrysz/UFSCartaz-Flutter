@@ -1,130 +1,115 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../l10n/generated/app_localizations.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              theme.colorScheme.primary,
-              theme.colorScheme.primary.withOpacity(0.8),
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(),
-                // App Logo
-                Container(
-                  padding: const EdgeInsets.all(32),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.onPrimary,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Spacer(),
+              // Logo
+              Center(
+                child: RichText(
+                  text: const TextSpan(
                     children: [
-                      Text(
-                        l10n.logo_part1,
-                        style: theme.textTheme.headlineLarge?.copyWith(
-                          color: theme.colorScheme.primary,
+                      TextSpan(
+                        text: 'UFSCAR',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 48,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
                         ),
                       ),
-                      Text(
-                        l10n.logo_part2,
-                        style: theme.textTheme.headlineLarge?.copyWith(
-                          color: theme.colorScheme.secondary,
+                      TextSpan(
+                        text: 'TAZ',
+                        style: TextStyle(
+                          color: Color(0xFFE53E3E),
+                          fontSize: 48,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 32),
-                // Welcome subtitle
-                Text(
-                  l10n.welcome_subtitle,
-                  style: theme.textTheme.headlineSmall?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.w300,
-                  ),
+              ),
+              const SizedBox(height: 16),
+              // Subtitle
+              const Center(
+                child: Text(
+                  'Entretenimento sem fim,\ntudo em um lugar',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                    height: 1.5,
+                  ),
                 ),
-                const Spacer(),
-                // Action buttons
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => context.go('/register'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.secondary,
-                      foregroundColor: theme.colorScheme.onSecondary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+              ),
+              const Spacer(),
+              // Buttons
+              Column(
+                children: [
+                  // Register Button (White with black text)
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: OutlinedButton(
+                      onPressed: () => context.go('/register'),
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black,
+                        side: const BorderSide(color: Colors.white),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      l10n.button_register,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'CADASTRAR',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    onPressed: () => context.go('/login'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: theme.colorScheme.onPrimary,
-                      side: BorderSide(
-                        color: theme.colorScheme.onPrimary,
-                        width: 2,
+                  const SizedBox(height: 16),
+                  // Login Button (Red)
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: () => context.go('/login'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFE53E3E),
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      l10n.button_login,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'ENTRAR',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 32),
-              ],
-            ),
+                ],
+              ),
+              const SizedBox(height: 50),
+            ],
           ),
         ),
       ),

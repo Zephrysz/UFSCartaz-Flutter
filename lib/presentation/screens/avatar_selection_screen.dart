@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/auth_provider.dart';
 import '../../core/utils/service_locator.dart';
-import '../../l10n/generated/app_localizations.dart';
 
 class AvatarSelectionScreen extends StatefulWidget {
   const AvatarSelectionScreen({super.key});
@@ -39,9 +38,9 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to load avatars: ${e.toString()}'),
-            backgroundColor: Theme.of(context).colorScheme.error,
+          const SnackBar(
+            content: Text('Failed to load avatars'),
+            backgroundColor: Color(0xFFE53E3E),
           ),
         );
       }
@@ -71,9 +70,9 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to update avatar: ${e.toString()}'),
-            backgroundColor: Theme.of(context).colorScheme.error,
+          const SnackBar(
+            content: Text('Failed to update avatar'),
+            backgroundColor: Color(0xFFE53E3E),
           ),
         );
       }
@@ -90,148 +89,147 @@ class _AvatarSelectionScreenState extends State<AvatarSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final theme = Theme.of(context);
-    
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text(l10n.title_choose_avatar),
+        backgroundColor: const Color(0xFF1A1A1A),
+        title: const Text(
+          'Escolha do avatar',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           TextButton(
             onPressed: _skipAvatarSelection,
-            child: Text(
-              l10n.button_skip,
-              style: TextStyle(
-                color: theme.colorScheme.onSurface,
-              ),
+            child: const Text(
+              'Pular',
+              style: TextStyle(color: Colors.white70),
             ),
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _avatarUrls.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 64,
-                        color: theme.colorScheme.error,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            const Text(
+              'Escolher avatar',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 30),
+            Expanded(
+              child: _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFFE53E3E),
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Failed to load avatars',
-                        style: theme.textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Please check your internet connection',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _isLoading = true;
-                          });
-                          _loadAvatars();
-                        },
-                        child: const Text('Retry'),
-                      ),
-                    ],
-                  ),
-                )
-              : Column(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 1,
-                          ),
-                          itemCount: _avatarUrls.length,
-                          itemBuilder: (context, index) {
-                            final avatarUrl = _avatarUrls[index];
-                            final isSelected = _selectedAvatar == avatarUrl;
-                            
-                            return GestureDetector(
-                              onTap: () => _selectAvatar(avatarUrl),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? theme.colorScheme.primary
-                                        : Colors.transparent,
-                                    width: 3,
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: CachedNetworkImage(
-                                    imageUrl: avatarUrl,
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) => Container(
-                                      color: theme.colorScheme.surface,
-                                      child: const Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    ),
-                                    errorWidget: (context, url, error) => Container(
-                                      color: theme.colorScheme.surface,
-                                      child: const Icon(
-                                        Icons.person,
-                                        size: 48,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    // Continue button
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _selectedAvatar != null && !_isUpdating
-                              ? _continueWithAvatar
-                              : null,
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                    )
+                  : _avatarUrls.isEmpty
+                      ? const Center(
+                          child: Text(
+                            'Nenhum avatar disponível',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
                             ),
                           ),
-                          child: _isUpdating
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: GridView.builder(
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 1,
+                            ),
+                            itemCount: _avatarUrls.length,
+                            itemBuilder: (context, index) {
+                              final avatarUrl = _avatarUrls[index];
+                              final isSelected = _selectedAvatar == avatarUrl;
+                              
+                              return GestureDetector(
+                                onTap: () => _selectAvatar(avatarUrl),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: isSelected 
+                                          ? const Color(0xFFE53E3E) 
+                                          : Colors.transparent,
+                                      width: 3,
+                                    ),
                                   ),
-                                )
-                              : Text(
-                                  l10n.button_continue,
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
+                                  child: ClipOval(
+                                    child: CachedNetworkImage(
+                                      imageUrl: avatarUrl,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Container(
+                                        color: const Color(0xFF2D2D2D),
+                                        child: const Center(
+                                          child: CircularProgressIndicator(
+                                            color: Color(0xFFE53E3E),
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) => Container(
+                                        color: const Color(0xFF2D2D2D),
+                                        child: const Icon(
+                                          Icons.person,
+                                          color: Colors.white54,
+                                          size: 40,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _selectedAvatar != null && !_isUpdating
+                      ? _continueWithAvatar
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFE53E3E),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ],
+                  ),
+                  child: _isUpdating
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text(
+                          'Continuar',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 } 
