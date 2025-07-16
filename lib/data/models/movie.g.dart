@@ -20,7 +20,7 @@ Movie _$MovieFromJson(Map<String, dynamic> json) => Movie(
       genreIds: (json['genre_ids'] as List<dynamic>)
           .map((e) => (e as num).toInt())
           .toList(),
-      video: json['video'] as String?,
+      video: json['video'] as bool,
       popularity: (json['popularity'] as num).toDouble(),
       originalLanguage: json['original_language'] as String,
     );

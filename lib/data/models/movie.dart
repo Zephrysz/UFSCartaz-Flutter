@@ -36,7 +36,7 @@ class Movie {
   @JsonKey(name: 'genre_ids')
   final List<int> genreIds;
   
-  final String? video;
+  final bool video;
   
   final double popularity;
   
@@ -55,7 +55,7 @@ class Movie {
     required this.voteCount,
     required this.adult,
     required this.genreIds,
-    this.video,
+    required this.video,
     required this.popularity,
     required this.originalLanguage,
   });

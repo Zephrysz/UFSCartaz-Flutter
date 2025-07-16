@@ -86,8 +86,15 @@ class MovieProvider extends ChangeNotifier {
   Future<void> loadPopularMovies() async {
     try {
       print('MovieProvider: Loading popular movies...');
-      _popularMovies = await _movieRepository.getPopularMovies();
-      print('MovieProvider: Loaded ${_popularMovies.length} popular movies');
+      final movies = await _movieRepository.getPopularMovies();
+      print('MovieProvider: Repository returned ${movies.length} popular movies');
+      
+      if (movies.isNotEmpty) {
+        print('MovieProvider: First popular movie: ${movies.first.title}');
+      }
+      
+      _popularMovies = movies;
+      print('MovieProvider: Set _popularMovies to ${_popularMovies.length} movies');
       notifyListeners();
     } catch (e) {
       print('MovieProvider: Error loading popular movies: $e');
@@ -100,8 +107,15 @@ class MovieProvider extends ChangeNotifier {
   Future<void> loadTopRatedMovies() async {
     try {
       print('MovieProvider: Loading top rated movies...');
-      _topRatedMovies = await _movieRepository.getTopRatedMovies();
-      print('MovieProvider: Loaded ${_topRatedMovies.length} top rated movies');
+      final movies = await _movieRepository.getTopRatedMovies();
+      print('MovieProvider: Repository returned ${movies.length} top rated movies');
+      
+      if (movies.isNotEmpty) {
+        print('MovieProvider: First top rated movie: ${movies.first.title}');
+      }
+      
+      _topRatedMovies = movies;
+      print('MovieProvider: Set _topRatedMovies to ${_topRatedMovies.length} movies');
       notifyListeners();
     } catch (e) {
       print('MovieProvider: Error loading top rated movies: $e');
@@ -114,8 +128,15 @@ class MovieProvider extends ChangeNotifier {
   Future<void> loadNowPlayingMovies() async {
     try {
       print('MovieProvider: Loading now playing movies...');
-      _nowPlayingMovies = await _movieRepository.getNowPlayingMovies();
-      print('MovieProvider: Loaded ${_nowPlayingMovies.length} now playing movies');
+      final movies = await _movieRepository.getNowPlayingMovies();
+      print('MovieProvider: Repository returned ${movies.length} now playing movies');
+      
+      if (movies.isNotEmpty) {
+        print('MovieProvider: First now playing movie: ${movies.first.title}');
+      }
+      
+      _nowPlayingMovies = movies;
+      print('MovieProvider: Set _nowPlayingMovies to ${_nowPlayingMovies.length} movies');
       notifyListeners();
     } catch (e) {
       print('MovieProvider: Error loading now playing movies: $e');
@@ -143,12 +164,18 @@ class MovieProvider extends ChangeNotifier {
     try {
       print('MovieProvider: Loading $category movies (genre: $genreId)...');
       final movies = await _movieRepository.getMoviesByGenre(genreId);
-      print('MovieProvider: Loaded ${movies.length} $category movies');
+      print('MovieProvider: Repository returned ${movies.length} $category movies');
+      
+      if (movies.isNotEmpty) {
+        print('MovieProvider: First $category movie: ${movies.first.title}');
+      }
       
       if (category == 'action') {
         _actionMovies = movies;
+        print('MovieProvider: Set _actionMovies to ${_actionMovies.length} movies');
       } else if (category == 'comedy') {
         _comedyMovies = movies;
+        print('MovieProvider: Set _comedyMovies to ${_comedyMovies.length} movies');
       }
       notifyListeners();
     } catch (e) {

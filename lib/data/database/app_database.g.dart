@@ -84,7 +84,7 @@ class _$AppDatabase extends AppDatabase {
     Callback? callback,
   ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 1,
+      version: 2,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -102,7 +102,7 @@ class _$AppDatabase extends AppDatabase {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `users` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `password_hash` TEXT NOT NULL, `avatar_url` TEXT, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL)');
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `movies` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `originalTitle` TEXT NOT NULL, `overview` TEXT NOT NULL, `posterPath` TEXT, `backdropPath` TEXT, `releaseDate` TEXT NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `adult` INTEGER NOT NULL, `genreIds` TEXT NOT NULL, `video` TEXT, `popularity` REAL NOT NULL, `originalLanguage` TEXT NOT NULL, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `movies` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `originalTitle` TEXT NOT NULL, `overview` TEXT NOT NULL, `posterPath` TEXT, `backdropPath` TEXT, `releaseDate` TEXT NOT NULL, `voteAverage` REAL NOT NULL, `voteCount` INTEGER NOT NULL, `adult` INTEGER NOT NULL, `genreIds` TEXT NOT NULL, `video` INTEGER NOT NULL, `popularity` REAL NOT NULL, `originalLanguage` TEXT NOT NULL, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `movie_history` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user_id` INTEGER NOT NULL, `movie_id` INTEGER NOT NULL, `movie_title` TEXT NOT NULL, `movie_poster_path` TEXT, `viewed_at` INTEGER NOT NULL, FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE NO ACTION ON DELETE CASCADE)');
         await database.execute(
@@ -306,7 +306,7 @@ class _$MovieDao extends MovieDao {
                   'voteCount': item.voteCount,
                   'adult': item.adult ? 1 : 0,
                   'genreIds': _listIntConverter.encode(item.genreIds),
-                  'video': item.video,
+                  'video': item.video ? 1 : 0,
                   'popularity': item.popularity,
                   'originalLanguage': item.originalLanguage
                 }),
@@ -326,7 +326,7 @@ class _$MovieDao extends MovieDao {
                   'voteCount': item.voteCount,
                   'adult': item.adult ? 1 : 0,
                   'genreIds': _listIntConverter.encode(item.genreIds),
-                  'video': item.video,
+                  'video': item.video ? 1 : 0,
                   'popularity': item.popularity,
                   'originalLanguage': item.originalLanguage
                 }),
@@ -346,7 +346,7 @@ class _$MovieDao extends MovieDao {
                   'voteCount': item.voteCount,
                   'adult': item.adult ? 1 : 0,
                   'genreIds': _listIntConverter.encode(item.genreIds),
-                  'video': item.video,
+                  'video': item.video ? 1 : 0,
                   'popularity': item.popularity,
                   'originalLanguage': item.originalLanguage
                 });
@@ -378,7 +378,7 @@ class _$MovieDao extends MovieDao {
             voteCount: row['voteCount'] as int,
             adult: (row['adult'] as int) != 0,
             genreIds: _listIntConverter.decode(row['genreIds'] as String),
-            video: row['video'] as String?,
+            video: (row['video'] as int) != 0,
             popularity: row['popularity'] as double,
             originalLanguage: row['originalLanguage'] as String),
         arguments: [id]);
@@ -399,7 +399,7 @@ class _$MovieDao extends MovieDao {
             voteCount: row['voteCount'] as int,
             adult: (row['adult'] as int) != 0,
             genreIds: _listIntConverter.decode(row['genreIds'] as String),
-            video: row['video'] as String?,
+            video: (row['video'] as int) != 0,
             popularity: row['popularity'] as double,
             originalLanguage: row['originalLanguage'] as String));
   }
@@ -420,7 +420,7 @@ class _$MovieDao extends MovieDao {
             voteCount: row['voteCount'] as int,
             adult: (row['adult'] as int) != 0,
             genreIds: _listIntConverter.decode(row['genreIds'] as String),
-            video: row['video'] as String?,
+            video: (row['video'] as int) != 0,
             popularity: row['popularity'] as double,
             originalLanguage: row['originalLanguage'] as String),
         arguments: [query]);
@@ -442,7 +442,7 @@ class _$MovieDao extends MovieDao {
             voteCount: row['voteCount'] as int,
             adult: (row['adult'] as int) != 0,
             genreIds: _listIntConverter.decode(row['genreIds'] as String),
-            video: row['video'] as String?,
+            video: (row['video'] as int) != 0,
             popularity: row['popularity'] as double,
             originalLanguage: row['originalLanguage'] as String),
         arguments: [limit]);
@@ -451,7 +451,7 @@ class _$MovieDao extends MovieDao {
   @override
   Future<List<Movie>> getTopRatedMovies(int limit) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM movies ORDER BY vote_average DESC LIMIT ?1',
+        'SELECT * FROM movies ORDER BY voteAverage DESC LIMIT ?1',
         mapper: (Map<String, Object?> row) => Movie(
             id: row['id'] as int,
             title: row['title'] as String,
@@ -464,7 +464,7 @@ class _$MovieDao extends MovieDao {
             voteCount: row['voteCount'] as int,
             adult: (row['adult'] as int) != 0,
             genreIds: _listIntConverter.decode(row['genreIds'] as String),
-            video: row['video'] as String?,
+            video: (row['video'] as int) != 0,
             popularity: row['popularity'] as double,
             originalLanguage: row['originalLanguage'] as String),
         arguments: [limit]);

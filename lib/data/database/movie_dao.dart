@@ -15,7 +15,7 @@ abstract class MovieDao {
   @Query('SELECT * FROM movies ORDER BY popularity DESC LIMIT :limit')
   Future<List<Movie>> getPopularMovies(int limit);
   
-  @Query('SELECT * FROM movies ORDER BY vote_average DESC LIMIT :limit')
+  @Query('SELECT * FROM movies ORDER BY voteAverage DESC LIMIT :limit')
   Future<List<Movie>> getTopRatedMovies(int limit);
   
   @insert
