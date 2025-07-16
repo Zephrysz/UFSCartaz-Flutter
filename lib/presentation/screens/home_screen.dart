@@ -173,45 +173,41 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               _buildFeaturedSection(movieProvider),
               // Movie categories
               Expanded(
-                child: Column(
-                  children: [
-                    Container(
-                      color: const Color(0xFF1A1A1A),
-                      child: TabBar(
-                        controller: _tabController,
-                        labelColor: const Color(0xFFE53E3E),
-                        unselectedLabelColor: Colors.white70,
-                        indicatorColor: const Color(0xFFE53E3E),
-                        tabs: const [
-                          Tab(text: 'Documentários'),
-                          Tab(text: 'Comédia'),
-                          Tab(text: 'Drama'),
-                        ],
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      // All Movies section
+                      _buildMovieSection(
+                        'All Movies',
+                        movieProvider.popularMovies,
+                        movieProvider.isLoading,
                       ),
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: [
-                          MovieList(
-                            movies: movieProvider.actionMovies,
-                            isLoading: movieProvider.isLoading,
-                            onMovieTap: _onMovieTap,
-                          ),
-                          MovieList(
-                            movies: movieProvider.comedyMovies,
-                            isLoading: movieProvider.isLoading,
-                            onMovieTap: _onMovieTap,
-                          ),
-                          MovieList(
-                            movies: movieProvider.topRatedMovies,
-                            isLoading: movieProvider.isLoading,
-                            onMovieTap: _onMovieTap,
-                          ),
-                        ],
+                      const SizedBox(height: 20),
+                      // Documentaries section
+                      _buildMovieSection(
+                        'Documentários',
+                        movieProvider.actionMovies,
+                        movieProvider.isLoading,
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      // Comedy section
+                      _buildMovieSection(
+                        'Comédia',
+                        movieProvider.comedyMovies,
+                        movieProvider.isLoading,
+                      ),
+                      const SizedBox(height: 20),
+                      // Drama section
+                      _buildMovieSection(
+                        'Drama',
+                        movieProvider.topRatedMovies,
+                        movieProvider.isLoading,
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -365,6 +361,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       movies: movieProvider.searchResults,
       isLoading: movieProvider.isSearching,
       onMovieTap: _onMovieTap,
+    );
+  }
+
+  Widget _buildMovieSection(String title, List<Movie> movies, bool isLoading) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        MovieList(
+          movies: movies,
+          isLoading: isLoading,
+          onMovieTap: _onMovieTap,
+        ),
+      ],
     );
   }
 

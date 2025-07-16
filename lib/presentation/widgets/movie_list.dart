@@ -49,20 +49,20 @@ class MovieList extends StatelessWidget {
 
     return Container(
       color: Colors.black,
-      child: GridView.builder(
-        padding: const EdgeInsets.all(8),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.7,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
+      height: 200, // Fixed height for horizontal scrolling
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         itemCount: movies.length,
         itemBuilder: (context, index) {
           final movie = movies[index];
-          return MovieCard(
-            movie: movie,
-            onTap: () => onMovieTap(movie),
+          return Container(
+            width: 120,
+            margin: const EdgeInsets.only(right: 12),
+            child: MovieCard(
+              movie: movie,
+              onTap: () => onMovieTap(movie),
+            ),
           );
         },
       ),
