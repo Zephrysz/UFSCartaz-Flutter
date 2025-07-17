@@ -63,25 +63,31 @@ class MovieCard extends StatelessWidget {
               ),
             ),
             // Movie info
+            // Movie info
             Expanded(
               flex: 1,
               child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  // Remova o mainAxisAlignment.center ou mude para .start
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(
-                      movie.title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
+                    // Envolva apenas o Text com Flexible. Isso fará com que o texto
+                    // ocupe o espaço restante após a renderização da avaliação.
+                    Flexible(
+                      child: Text(
+                        movie.title,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4), // Aumentei um pouco para melhor espaçamento
                     Row(
                       children: [
                         const Icon(
@@ -89,7 +95,7 @@ class MovieCard extends StatelessWidget {
                           color: Color(0xFFFFD700),
                           size: 12,
                         ),
-                        const SizedBox(width: 2),
+                        const SizedBox(width: 4),
                         Text(
                           movie.formattedRating,
                           style: const TextStyle(
