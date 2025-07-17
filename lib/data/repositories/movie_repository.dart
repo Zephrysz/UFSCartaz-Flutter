@@ -268,15 +268,31 @@ class MovieRepository {
   // Movie History methods
   Future<void> addToHistory(int userId, Movie movie) async {
     try {
-      final historyEntry = MovieHistoryEntry(
-        userId: userId,
-        movieId: movie.id,
-        movieTitle: movie.title,
-        moviePosterPath: movie.posterPath,
-        viewedAt: DateTime.now(),
-      );
-
-      await _database.movieHistoryDao.insertHistoryEntry(historyEntry);
+      // Verificar se já existe uma entrada para este usuário e filme
+      final existingEntry = await _database.movieHistoryDao.getHistoryEntryByUserAndMovie(userId, movie.id);
+      
+      if (existingEntry != null) {
+        // Se já existe, atualizar a data de visualização
+        final updatedEntry = MovieHistoryEntry(
+          id: existingEntry.id,
+          userId: userId,
+          movieId: movie.id,
+          movieTitle: movie.title,
+          moviePosterPath: movie.posterPath,
+          viewedAt: DateTime.now(),
+        );
+        await _database.movieHistoryDao.updateHistoryEntry(updatedEntry);
+      } else {
+        // Se não existe, criar nova entrada
+        final historyEntry = MovieHistoryEntry(
+          userId: userId,
+          movieId: movie.id,
+          movieTitle: movie.title,
+          moviePosterPath: movie.posterPath,
+          viewedAt: DateTime.now(),
+        );
+        await _database.movieHistoryDao.insertHistoryEntry(historyEntry);
+      }
     } catch (e) {
       print('MovieRepository: addToHistory failed: $e');
     }
