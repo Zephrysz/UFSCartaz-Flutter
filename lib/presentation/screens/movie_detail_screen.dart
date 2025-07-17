@@ -231,6 +231,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             _buildInfoRow(l10n.popularity_label, movie.popularity.toStringAsFixed(1)),
             if (movie.adult)
               _buildInfoRow(l10n.content_rating_label, l10n.adult_rating),
+            const SizedBox(height: 24),
           ],
         ),
       ),
