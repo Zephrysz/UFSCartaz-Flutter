@@ -1,16 +1,40 @@
-# ufscartaz_flutter
+# UFSCartaz Flutter
 
-A new Flutter project.
+App Flutter para cartazes da UFS.
 
-## Getting Started
+## Como executar
 
-This project is a starting point for a Flutter application.
+### Pré-requisitos
+- Flutter SDK instalado
+- Android Studio ou Xcode (para emuladores)
+- Dispositivo Android/iOS ou emulador configurado
 
-A few resources to get you started if this is your first Flutter project:
+### Passos para executar
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+1. **Instalar dependências:**
+   ```bash
+   flutter pub get
+   ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2. **Executar o app:**
+   ```bash
+   flutter run
+   ```
+
+### Comandos úteis
+
+- **Verificar dispositivos disponíveis:**
+  ```bash
+  flutter devices
+  ```
+
+- **Executar em dispositivo específico:**
+  ```bash
+  flutter run -d <device_id>
+  ```
+
+- **Compilar para produção:**
+  ```bash
+  flutter build apk          # Android
+  flutter build ios          # iOS
+  ```
