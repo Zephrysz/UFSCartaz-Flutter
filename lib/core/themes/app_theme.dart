@@ -34,7 +34,7 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: background,
     appBarTheme: const AppBarTheme(
-      backgroundColor: primaryColor,
+      backgroundColor: Colors.black,
       foregroundColor: onPrimary,
       elevation: 0,
       centerTitle: true,
