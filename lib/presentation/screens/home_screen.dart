@@ -4,12 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/auth_provider.dart';
 import '../providers/movie_provider.dart';
-import '../providers/theme_provider.dart';
+// Removido, pois não é usado
+// import '../providers/theme_provider.dart';
 import '../widgets/movie_list.dart';
 import '../../data/models/movie.dart';
-// ADICIONADO: Import para o modelo MovieHistoryEntry
 import '../../data/models/movie_history_entry.dart';
 import '../../core/constants/app_constants.dart';
+
+// Importe o arquivo de localizações gerado
+import '../../l10n/generated/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    // A inicialização do TabController parece não ser usada, mas mantida caso seja para uso futuro
     _tabController = TabController(length: 3, vsync: this);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -64,16 +68,18 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _logout() {
+    // Obtenha a instância de AppLocalizations para usar no diálogo
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF2D2D2D),
-        title: const Text('Logout', style: TextStyle(color: Colors.white)),
-        content: const Text('Are you sure you want to logout?', style: TextStyle(color: Colors.white)),
+        title: Text(l10n.logout_title, style: const TextStyle(color: Colors.white)), // Substituído
+        content: Text(l10n.logout_confirmation_message, style: const TextStyle(color: Colors.white)), // Substituído
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel', style: TextStyle(color: Colors.white70)),
+            child: Text(l10n.cancel_button, style: const TextStyle(color: Colors.white70)), // Substituído
           ),
           TextButton(
             onPressed: () {
@@ -81,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Provider.of<AuthProvider>(context, listen: false).logout();
               context.go('/welcome');
             },
-            child: const Text('Logout', style: TextStyle(color: Color(0xFFE53E3E))),
+            child: Text(l10n.logout_title, style: const TextStyle(color: Color(0xFFE53E3E))), // Substituído
           ),
         ],
       ),
@@ -90,19 +96,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // Obtenha a instância de AppLocalizations
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        //... seu AppBar (sem alterações)
         backgroundColor: const Color(0xFF1A1A1A),
         elevation: 0,
         title: _isSearching
             ? TextField(
           controller: _searchController,
-          decoration: const InputDecoration(
-            hintText: 'Para você, Lucas',
+          decoration: InputDecoration(
+            hintText: l10n.search_placeholder, // Substituído
             border: InputBorder.none,
-            hintStyle: TextStyle(color: Colors.white70),
+            hintStyle: const TextStyle(color: Colors.white70),
           ),
           style: const TextStyle(color: Colors.white),
           onChanged: _onSearchChanged,
@@ -110,8 +118,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         )
             : Consumer<AuthProvider>(
           builder: (context, authProvider, child) {
+            // Usa a string de saudação com o nome do usuário ou um padrão
+            final userName = authProvider.currentUser?.name ?? l10n.default_user_name;
             return Text(
-              'Para você, ${authProvider.currentUser?.name ?? 'Lucas'}',
+              l10n.home_greeting(userName), // Substituído
               style: const TextStyle(color: Colors.white, fontSize: 18),
             );
           },
@@ -133,6 +143,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   child: CircleAvatar(
                     radius: 18,
                     backgroundColor: const Color(0xFFE53E3E),
+                    // O conteúdo do avatar não é texto, então permanece como está
                     child: authProvider.currentUser?.avatarUrl != null
                         ? ClipOval(
                       child: CachedNetworkImage(
@@ -140,23 +151,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         fit: BoxFit.cover,
                         width: 36,
                         height: 36,
-                        placeholder: (context, url) => const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        errorWidget: (context, url, error) => const Icon(
-                          Icons.person,
-                          color: Colors.white,
-                          size: 20,
-                        ),
+                        placeholder: (context, url) => const Icon(Icons.person, color: Colors.white, size: 20),
+                        errorWidget: (context, url, error) => const Icon(Icons.person, color: Colors.white, size: 20),
                       ),
                     )
-                        : const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                        : const Icon(Icons.person, color: Colors.white, size: 20),
                   ),
                 ),
               );
@@ -167,50 +166,43 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       body: Consumer<MovieProvider>(
         builder: (context, movieProvider, child) {
           if (_isSearching && _searchController.text.isNotEmpty) {
-            return _buildSearchResults(movieProvider);
+            return _buildSearchResults(movieProvider, l10n);
           }
 
           return Column(
             children: [
-              // Featured movie section
-              _buildFeaturedSection(movieProvider),
-              // Movie categories
+              _buildFeaturedSection(movieProvider, l10n),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
-                      // Historico section
                       if (movieProvider.recentHistory.isNotEmpty)
                         _buildHistorySection(
-                          'Vistos Recentemente',
+                          l10n.recently_viewed, // Substituído
                           movieProvider.recentHistory,
                         ),
-                      // All Movies section
                       _buildMovieSection(
-                        'All Movies',
+                        l10n.all_movies, // Substituído
                         movieProvider.popularMovies,
                         movieProvider.isLoading,
                       ),
                       const SizedBox(height: 20),
-                      // Documentaries section
                       _buildMovieSection(
-                        'Documentários',
+                        l10n.category_documentaries, // Substituído
                         movieProvider.actionMovies,
                         movieProvider.isLoading,
                       ),
                       const SizedBox(height: 20),
-                      // Comedy section
                       _buildMovieSection(
-                        'Comédia',
+                        l10n.category_comedy, // Substituído
                         movieProvider.comedyMovies,
                         movieProvider.isLoading,
                       ),
                       const SizedBox(height: 20),
-                      // Drama section
                       _buildMovieSection(
-                        'Drama',
+                        l10n.category_drama, // Substituído
                         movieProvider.topRatedMovies,
                         movieProvider.isLoading,
                       ),
@@ -226,17 +218,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildFeaturedSection(MovieProvider movieProvider) {
-    //... sem alterações nesta função
+  Widget _buildFeaturedSection(MovieProvider movieProvider, AppLocalizations l10n) {
     if (movieProvider.isLoading) {
       return Container(
         height: 200,
         color: const Color(0xFF1A1A1A),
-        child: const Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFFE53E3E),
-          ),
-        ),
+        child: const Center(child: CircularProgressIndicator(color: Color(0xFFE53E3E))),
       );
     }
 
@@ -244,10 +231,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       return Container(
         height: 200,
         color: const Color(0xFF1A1A1A),
-        child: const Center(
+        child: Center(
           child: Text(
-            'No movies available',
-            style: TextStyle(color: Colors.white70),
+            l10n.no_movies_available, // Substituído
+            style: const TextStyle(color: Colors.white70),
           ),
         ),
       );
@@ -269,10 +256,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.transparent,
-              Colors.black.withOpacity(0.8),
-            ],
+            colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
           ),
         ),
         child: Padding(
@@ -281,21 +265,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                featuredMovie.title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              Text(featuredMovie.title, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               Text(
                 featuredMovie.overview,
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 14,
-                ),
+                style: const TextStyle(color: Colors.white70, fontSize: 14),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -307,11 +281,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFE53E3E),
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text('Assistir'),
+                    child: Text(l10n.watch_button), // Substituído
                   ),
                   const SizedBox(width: 12),
                   OutlinedButton(
@@ -319,11 +291,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
                       side: const BorderSide(color: Colors.white),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text('Mais info'),
+                    child: Text(l10n.more_info_button), // Substituído
                   ),
                 ],
               ),
@@ -334,53 +304,42 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  // CORRIGIDO: O tipo de 'history' agora é reconhecido
   Widget _buildHistorySection(String title, List<MovieHistoryEntry> history) {
+    // O conteúdo desta função não contém strings visíveis ao usuário, então permanece como está.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
         ),
         const SizedBox(height: 10),
         SizedBox(
-          height: 180, // Altura da lista horizontal
+          height: 180,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: history.length,
             itemBuilder: (context, index) {
               final entry = history[index];
-              // CORRIGIDO: Objeto Movie criado com todos os parâmetros obrigatórios
               final movieFromHistory = Movie(
                 id: entry.movieId,
                 title: entry.movieTitle,
-                originalTitle: entry.movieTitle, // Usando movieTitle como fallback
-                overview: '', // Fornecendo valor padrão
+                originalTitle: entry.movieTitle,
+                overview: '',
                 posterPath: entry.moviePosterPath,
-                backdropPath: entry.moviePosterPath, // Usando poster como fallback
-                releaseDate: '', // Fornecendo valor padrão
-                voteAverage: 0.0, // Fornecendo valor padrão
-                genreIds: [], // Fornecendo valor padrão
-                adult: false, // Fornecendo valor padrão
-                originalLanguage: '', // Fornecendo valor padrão
-                popularity: 0.0, // Fornecendo valor padrão
-                video: false, // Fornecendo valor padrão
-                voteCount: 0, // Fornecendo valor padrão
+                backdropPath: entry.moviePosterPath,
+                releaseDate: '',
+                voteAverage: 0.0,
+                genreIds: [],
+                adult: false,
+                originalLanguage: '',
+                popularity: 0.0,
+                video: false,
+                voteCount: 0,
               );
 
               return Padding(
-                padding: EdgeInsets.only(
-                  left: index == 0 ? 16.0 : 8.0,
-                  right: index == history.length - 1 ? 16.0 : 0,
-                ),
+                padding: EdgeInsets.only(left: index == 0 ? 16.0 : 8.0, right: index == history.length - 1 ? 16.0 : 0),
                 child: GestureDetector(
                   onTap: () => _onMovieTap(movieFromHistory),
                   child: Column(
@@ -393,11 +352,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           width: 120,
                           height: 180,
                           fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            width: 120,
-                            height: 180,
-                            color: Colors.grey[800],
-                          ),
+                          placeholder: (context, url) => Container(width: 120, height: 180, color: Colors.grey[800]),
                           errorWidget: (context, url, error) => Container(
                             width: 120,
                             height: 180,
@@ -418,33 +373,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildSearchResults(MovieProvider movieProvider) {
-    //... sem alterações nesta função
+  Widget _buildSearchResults(MovieProvider movieProvider, AppLocalizations l10n) {
     if (movieProvider.isSearching) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: Color(0xFFE53E3E),
-        ),
-      );
+      return const Center(child: CircularProgressIndicator(color: Color(0xFFE53E3E)));
     }
 
     if (movieProvider.searchResults.isEmpty && movieProvider.searchQuery.isNotEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.search_off,
-              size: 64,
-              color: Colors.white70,
-            ),
-            SizedBox(height: 16),
+            const Icon(Icons.search_off, size: 64, color: Colors.white70),
+            const SizedBox(height: 16),
             Text(
-              'Nenhum resultado encontrado',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 18,
-              ),
+              l10n.no_movies_found, // Substituído
+              style: const TextStyle(color: Colors.white70, fontSize: 18),
               textAlign: TextAlign.center,
             ),
           ],
@@ -460,20 +403,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildMovieSection(String title, List<Movie> movies, bool isLoading) {
-    //... sem alterações nesta função
+    // Apenas o título desta seção é uma string, que é passada como argumento
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
+          child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
         ),
         const SizedBox(height: 10),
         MovieList(

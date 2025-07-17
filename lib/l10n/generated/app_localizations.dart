@@ -469,6 +469,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No overview available.'**
   String get no_overview_available;
+
+  /// No description provided for @logout_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout_title;
+
+  /// No description provided for @logout_confirmation_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
+  String get logout_confirmation_message;
+
+  /// No description provided for @cancel_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel_button;
+
+  /// No description provided for @watch_button.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch'**
+  String get watch_button;
+
+  /// No description provided for @more_info_button.
+  ///
+  /// In en, this message translates to:
+  /// **'More Info'**
+  String get more_info_button;
+
+  /// No description provided for @no_movies_available.
+  ///
+  /// In en, this message translates to:
+  /// **'No movies available'**
+  String get no_movies_available;
+
+  /// No description provided for @movie_information_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Movie Information'**
+  String get movie_information_title;
+
+  /// No description provided for @original_title_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Original Title'**
+  String get original_title_label;
+
+  /// No description provided for @release_date_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Release Date'**
+  String get release_date_label;
+
+  /// No description provided for @language_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language_label;
+
+  /// No description provided for @popularity_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Popularity'**
+  String get popularity_label;
+
+  /// No description provided for @content_rating_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Content Rating'**
+  String get content_rating_label;
+
+  /// No description provided for @adult_rating.
+  ///
+  /// In en, this message translates to:
+  /// **'Adult'**
+  String get adult_rating;
+
+  /// No description provided for @unknown_genre.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown_genre;
+
+  /// No description provided for @failed_to_load_avatars.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load avatars'**
+  String get failed_to_load_avatars;
+
+  /// No description provided for @failed_to_update_avatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update avatar'**
+  String get failed_to_update_avatar;
+
+  /// No description provided for @no_avatars_available.
+  ///
+  /// In en, this message translates to:
+  /// **'No avatars available'**
+  String get no_avatars_available;
+
+  /// No description provided for @login_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed. Please check your credentials.'**
+  String get login_failed;
+
+  /// No description provided for @validator_enter_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get validator_enter_email;
+
+  /// No description provided for @validator_valid_email.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email'**
+  String get validator_valid_email;
+
+  /// No description provided for @validator_enter_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password'**
+  String get validator_enter_password;
+
+  /// No description provided for @validator_password_length.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get validator_password_length;
+
+  /// No description provided for @registration_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed. Please try again.'**
+  String get registration_failed;
+
+  /// No description provided for @validator_enter_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your name'**
+  String get validator_enter_name;
+
+  /// No description provided for @validator_name_length.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be at least 2 characters'**
+  String get validator_name_length;
 }
 
 class _AppLocalizationsDelegate

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+// Importe o arquivo de localizações gerado
+import '../../l10n/generated/app_localizations.dart';
+
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Obtenha a instância de AppLocalizations
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -19,11 +25,11 @@ class WelcomeScreen extends StatelessWidget {
               // Logo
               Center(
                 child: RichText(
-                  text: const TextSpan(
+                  text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'UFSCAR',
-                        style: TextStyle(
+                        text: l10n.logo_part1, // Substituído
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 48,
                           fontWeight: FontWeight.bold,
@@ -31,8 +37,8 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       TextSpan(
-                        text: 'TAZ',
-                        style: TextStyle(
+                        text: l10n.logo_part2, // Substituído
+                        style: const TextStyle(
                           color: Color(0xFFE53E3E),
                           fontSize: 48,
                           fontWeight: FontWeight.bold,
@@ -45,11 +51,11 @@ class WelcomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               // Subtitle
-              const Center(
+              Center(
                 child: Text(
-                  'Entretenimento sem fim,\ntudo em um lugar',
+                  l10n.welcome_subtitle, // Substituído
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 16,
                     height: 1.5,
@@ -74,9 +80,9 @@ class WelcomeScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text(
-                        'CADASTRAR',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.button_register, // Substituído
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -97,9 +103,9 @@ class WelcomeScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text(
-                        'ENTRAR',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.button_login, // Substituído
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -115,4 +121,4 @@ class WelcomeScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}

@@ -205,4 +205,80 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get no_overview_available => 'No overview available.';
+
+  @override
+  String get logout_title => 'Logout';
+
+  @override
+  String get logout_confirmation_message => 'Are you sure you want to logout?';
+
+  @override
+  String get cancel_button => 'Cancel';
+
+  @override
+  String get watch_button => 'Watch';
+
+  @override
+  String get more_info_button => 'More Info';
+
+  @override
+  String get no_movies_available => 'No movies available';
+
+  @override
+  String get movie_information_title => 'Movie Information';
+
+  @override
+  String get original_title_label => 'Original Title';
+
+  @override
+  String get release_date_label => 'Release Date';
+
+  @override
+  String get language_label => 'Language';
+
+  @override
+  String get popularity_label => 'Popularity';
+
+  @override
+  String get content_rating_label => 'Content Rating';
+
+  @override
+  String get adult_rating => 'Adult';
+
+  @override
+  String get unknown_genre => 'Unknown';
+
+  @override
+  String get failed_to_load_avatars => 'Failed to load avatars';
+
+  @override
+  String get failed_to_update_avatar => 'Failed to update avatar';
+
+  @override
+  String get no_avatars_available => 'No avatars available';
+
+  @override
+  String get login_failed => 'Login failed. Please check your credentials.';
+
+  @override
+  String get validator_enter_email => 'Please enter your email';
+
+  @override
+  String get validator_valid_email => 'Please enter a valid email';
+
+  @override
+  String get validator_enter_password => 'Please enter your password';
+
+  @override
+  String get validator_password_length =>
+      'Password must be at least 6 characters';
+
+  @override
+  String get registration_failed => 'Registration failed. Please try again.';
+
+  @override
+  String get validator_enter_name => 'Please enter your name';
+
+  @override
+  String get validator_name_length => 'Name must be at least 2 characters';
 }

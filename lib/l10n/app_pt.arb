@@ -69,5 +69,34 @@
   "movie_not_found": "Filme não encontrado.",
   "rating": "Avaliação: {rating}",
   "overview_title": "Sinopse",
-  "no_overview_available": "Sinopse não disponível."
+  "no_overview_available": "Sinopse não disponível.",
+
+  "logout_title": "Sair",
+  "logout_confirmation_message": "Tem certeza de que deseja sair?",
+  "cancel_button": "Cancelar",
+  "watch_button": "Assistir",
+  "more_info_button": "Mais Info",
+  "no_movies_available": "Nenhum filme disponível",
+  "movie_information_title": "Informações do Filme",
+  "original_title_label": "Título Original",
+  "release_date_label": "Data de Lançamento",
+  "language_label": "Idioma",
+  "popularity_label": "Popularidade",
+  "content_rating_label": "Classificação",
+  "adult_rating": "Adulto",
+  "unknown_genre": "Desconhecido",
+
+    "failed_to_load_avatars": "Falha ao carregar avatares",
+    "failed_to_update_avatar": "Falha ao atualizar o avatar",
+    "no_avatars_available": "Nenhum avatar disponível",
+
+    "login_failed": "Falha no login. Verifique suas credenciais.",
+    "validator_enter_email": "Por favor, insira seu e-mail",
+    "validator_valid_email": "Por favor, insira um e-mail válido",
+    "validator_enter_password": "Por favor, insira sua senha",
+    "validator_password_length": "A senha deve ter no mínimo 6 caracteres",
+
+  "registration_failed": "Falha no cadastro. Por favor, tente novamente.",
+  "validator_enter_name": "Por favor, insira seu nome",
+  "validator_name_length": "O nome deve ter no mínimo 2 caracteres"
 } 

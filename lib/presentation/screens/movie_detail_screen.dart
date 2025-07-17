@@ -4,11 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../providers/movie_provider.dart';
 import '../../data/models/movie.dart';
+// Certifique-se de que o caminho de importação está correto para seu projeto.
 import '../../l10n/generated/app_localizations.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final int movieId;
-  
+
   const MovieDetailScreen({
     super.key,
     required this.movieId,
@@ -32,8 +33,10 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    
+
     return Scaffold(
+      // A cor do Scaffold pode ser definida pelo tema geral do app
+      // backgroundColor: Colors.black,
       body: Consumer<MovieProvider>(
         builder: (context, movieProvider, child) {
           if (movieProvider.isLoadingDetails) {
@@ -77,7 +80,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
           return CustomScrollView(
             slivers: [
-              // App bar with backdrop image
               SliverAppBar(
                 expandedHeight: 300,
                 pinned: true,
@@ -95,7 +97,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   background: Stack(
                     fit: StackFit.expand,
                     children: [
-                      // Backdrop image
                       CachedNetworkImage(
                         imageUrl: movie.fullBackdropUrl.isNotEmpty
                             ? movie.fullBackdropUrl
@@ -103,28 +104,19 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
                           color: theme.colorScheme.surface,
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
+                          child: const Center(child: CircularProgressIndicator()),
                         ),
                         errorWidget: (context, url, error) => Container(
                           color: theme.colorScheme.surface,
-                          child: const Icon(
-                            Icons.movie,
-                            size: 64,
-                          ),
+                          child: const Icon(Icons.movie, size: 64),
                         ),
                       ),
-                      // Gradient overlay
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.transparent,
-                              Colors.black.withOpacity(0.7),
-                            ],
+                            colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
                           ),
                         ),
                       ),
@@ -132,18 +124,15 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   ),
                 ),
               ),
-              // Movie details
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Movie poster and basic info
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Poster
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
                             child: CachedNetworkImage(
@@ -152,83 +141,42 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                               height: 180,
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(
-                                width: 120,
-                                height: 180,
-                                color: theme.colorScheme.surface,
-                                child: const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
+                                width: 120, height: 180, color: theme.colorScheme.surface,
+                                child: const Center(child: CircularProgressIndicator()),
                               ),
                               errorWidget: (context, url, error) => Container(
-                                width: 120,
-                                height: 180,
-                                color: theme.colorScheme.surface,
-                                child: const Icon(
-                                  Icons.movie,
-                                  size: 48,
-                                ),
+                                width: 120, height: 180, color: theme.colorScheme.surface,
+                                child: const Icon(Icons.movie, size: 48),
                               ),
                             ),
                           ),
                           const SizedBox(width: 16),
-                          // Movie info
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Title
-                                Text(
-                                  movie.title,
-                                  style: theme.textTheme.headlineSmall?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                Text(movie.title, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
                                 const SizedBox(height: 8),
-                                // Release year
                                 if (movie.releaseYear.isNotEmpty)
-                                  Text(
-                                    movie.releaseYear,
-                                    style: theme.textTheme.bodyLarge?.copyWith(
-                                      color: theme.colorScheme.onSurface.withOpacity(0.7),
-                                    ),
-                                  ),
+                                  Text(movie.releaseYear, style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.7))),
                                 const SizedBox(height: 8),
-                                // Rating
                                 Row(
                                   children: [
-                                    Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                      size: 20,
-                                    ),
+                                    const Icon(Icons.star, color: Colors.amber, size: 20),
                                     const SizedBox(width: 4),
-                                    Text(
-                                      l10n.rating(movie.voteAverage),
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    Text(l10n.rating(movie.voteAverage), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
                                     const SizedBox(width: 8),
-                                    Text(
-                                      '(${movie.voteCount})',
-                                      style: theme.textTheme.bodySmall?.copyWith(
-                                        color: theme.colorScheme.onSurface.withOpacity(0.7),
-                                      ),
-                                    ),
+                                    Text('(${movie.voteCount})', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.7))),
                                   ],
                                 ),
                                 const SizedBox(height: 16),
-                                // Genre chips
                                 Wrap(
                                   spacing: 8,
                                   runSpacing: 4,
                                   children: movie.genreIds.take(3).map((genreId) {
                                     final genreName = _getGenreName(genreId, l10n);
                                     return Chip(
-                                      label: Text(
-                                        genreName,
-                                        style: theme.textTheme.bodySmall,
-                                      ),
+                                      label: Text(genreName, style: theme.textTheme.bodySmall),
                                       backgroundColor: theme.colorScheme.secondary.withOpacity(0.2),
                                     );
                                   }).toList(),
@@ -239,22 +187,13 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 24),
-                      // Overview
-                      Text(
-                        l10n.overview_title,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Text(l10n.overview_title, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       Text(
                         movie.overview.isNotEmpty ? movie.overview : l10n.no_overview_available,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          height: 1.5,
-                        ),
+                        style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
                       ),
                       const SizedBox(height: 24),
-                      // Additional info
                       _buildInfoSection(l10n, theme, movie),
                     ],
                   ),
@@ -275,18 +214,18 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Movie Information',
+              l10n.movie_information_title, // Substituído
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
-            _buildInfoRow('Original Title', movie.originalTitle, theme),
-            _buildInfoRow('Release Date', movie.releaseDate, theme),
-            _buildInfoRow('Language', movie.originalLanguage.toUpperCase(), theme),
-            _buildInfoRow('Popularity', movie.popularity.toStringAsFixed(1), theme),
+            _buildInfoRow(l10n.original_title_label, movie.originalTitle, theme), // Substituído
+            _buildInfoRow(l10n.release_date_label, movie.releaseDate, theme), // Substituído
+            _buildInfoRow(l10n.language_label, movie.originalLanguage.toUpperCase(), theme), // Substituído
+            _buildInfoRow(l10n.popularity_label, movie.popularity.toStringAsFixed(1), theme), // Substituído
             if (movie.adult)
-              _buildInfoRow('Content Rating', 'Adult', theme),
+              _buildInfoRow(l10n.content_rating_label, l10n.adult_rating, theme), // Substituído
           ],
         ),
       ),
@@ -321,7 +260,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   }
 
   String _getGenreName(int genreId, AppLocalizations l10n) {
-    // Map genre IDs to localized names
     switch (genreId) {
       case 28: return l10n.category_action;
       case 12: return l10n.category_adventure;
@@ -342,7 +280,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       case 53: return l10n.category_thriller;
       case 10752: return l10n.category_war;
       case 37: return l10n.category_western;
-      default: return 'Unknown';
+      default: return l10n.unknown_genre; // Substituído
     }
   }
-} 
+}
