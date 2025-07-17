@@ -62,19 +62,14 @@ class MovieCard extends StatelessWidget {
                 ),
               ),
             ),
-            // Movie info
-            // Movie info
             Expanded(
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  // Remova o mainAxisAlignment.center ou mude para .start
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    // Envolva apenas o Text com Flexible. Isso fará com que o texto
-                    // ocupe o espaço restante após a renderização da avaliação.
                     Flexible(
                       child: Text(
                         movie.title,
