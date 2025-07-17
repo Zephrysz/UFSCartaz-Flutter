@@ -105,5 +105,34 @@
     }
   },
   "overview_title": "Overview",
-  "no_overview_available": "No overview available."
+  "no_overview_available": "No overview available.",
+
+    "logout_title": "Logout",
+    "logout_confirmation_message": "Are you sure you want to logout?",
+    "cancel_button": "Cancel",
+    "watch_button": "Watch",
+    "more_info_button": "More Info",
+    "no_movies_available": "No movies available",
+    "movie_information_title": "Movie Information",
+    "original_title_label": "Original Title",
+    "release_date_label": "Release Date",
+    "language_label": "Language",
+    "popularity_label": "Popularity",
+    "content_rating_label": "Content Rating",
+    "adult_rating": "Adult",
+    "unknown_genre": "Unknown",
+
+    "failed_to_load_avatars": "Failed to load avatars",
+    "failed_to_update_avatar": "Failed to update avatar",
+    "no_avatars_available": "No avatars available",
+
+    "login_failed": "Login failed. Please check your credentials.",
+    "validator_enter_email": "Please enter your email",
+    "validator_valid_email": "Please enter a valid email",
+    "validator_enter_password": "Please enter your password",
+    "validator_password_length": "Password must be at least 6 characters",
+
+  "registration_failed": "Registration failed. Please try again.",
+  "validator_enter_name": "Please enter your name",
+  "validator_name_length": "Name must be at least 2 characters"
 } 

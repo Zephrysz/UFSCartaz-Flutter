@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/auth_provider.dart';
 
+// Importe o arquivo de localizações gerado
+import '../../l10n/generated/app_localizations.dart';
+
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
 
@@ -28,7 +31,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
 
+    // Obtenha a instância de AppLocalizations
+    final l10n = AppLocalizations.of(context)!;
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     final success = await authProvider.register(
       _nameController.text.trim(),
       _emailController.text.trim(),
@@ -39,9 +45,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       context.go('/avatar-selection');
     } else if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Registration failed'),
-          backgroundColor: Color(0xFFE53E3E),
+        SnackBar(
+          content: Text(l10n.registration_failed), // Substituído
+          backgroundColor: const Color(0xFFE53E3E),
         ),
       );
     }
@@ -49,6 +55,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Obtenha a instância de AppLocalizations
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -64,11 +73,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   // Logo
                   Center(
                     child: RichText(
-                      text: const TextSpan(
+                      text: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'UFSCAR',
-                            style: TextStyle(
+                            text: l10n.logo_part1, // Substituído
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 36,
                               fontWeight: FontWeight.bold,
@@ -76,8 +85,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             ),
                           ),
                           TextSpan(
-                            text: 'TAZ',
-                            style: TextStyle(
+                            text: l10n.logo_part2, // Substituído
+                            style: const TextStyle(
                               color: Color(0xFFE53E3E),
                               fontSize: 36,
                               fontWeight: FontWeight.bold,
@@ -90,10 +99,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ),
                   const SizedBox(height: 16),
                   // Welcome message
-                  const Center(
+                  Center(
                     child: Text(
-                      'Bem-vindo!',
-                      style: TextStyle(
+                      l10n.auth_welcome, // Substituído
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
@@ -106,7 +115,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     controller: _nameController,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'Nome',
+                      labelText: l10n.label_name, // Substituído
                       labelStyle: const TextStyle(color: Colors.white70),
                       filled: true,
                       fillColor: const Color(0xFF2D2D2D),
@@ -121,10 +130,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your name';
+                        return l10n.validator_enter_name; // Substituído
                       }
                       if (value.length < 2) {
-                        return 'Name must be at least 2 characters';
+                        return l10n.validator_name_length; // Substituído
                       }
                       return null;
                     },
@@ -136,7 +145,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     keyboardType: TextInputType.emailAddress,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'E-mail',
+                      labelText: l10n.label_email, // Substituído
                       labelStyle: const TextStyle(color: Colors.white70),
                       filled: true,
                       fillColor: const Color(0xFF2D2D2D),
@@ -151,10 +160,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
+                        return l10n.validator_enter_email; // Substituído
                       }
                       if (!value.contains('@')) {
-                        return 'Please enter a valid email';
+                        return l10n.validator_valid_email; // Substituído
                       }
                       return null;
                     },
@@ -166,7 +175,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     obscureText: _obscurePassword,
                     style: const TextStyle(color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: 'Senha',
+                      labelText: l10n.label_password, // Substituído
                       labelStyle: const TextStyle(color: Colors.white70),
                       filled: true,
                       fillColor: const Color(0xFF2D2D2D),
@@ -192,10 +201,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return l10n.validator_enter_password; // Substituído
                       }
                       if (value.length < 6) {
-                        return 'Password must be at least 6 characters';
+                        return l10n.validator_password_length; // Substituído
                       }
                       return null;
                     },
@@ -217,20 +226,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           ),
                           child: authProvider.isLoading
                               ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Text(
-                                  'CADASTRAR',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2,
+                            ),
+                          )
+                              : Text(
+                            l10n.button_register.toUpperCase(), // Substituído
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
                       );
                     },

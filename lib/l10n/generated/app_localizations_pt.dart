@@ -206,4 +206,81 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get no_overview_available => 'Sinopse não disponível.';
+
+  @override
+  String get logout_title => 'Sair';
+
+  @override
+  String get logout_confirmation_message => 'Tem certeza de que deseja sair?';
+
+  @override
+  String get cancel_button => 'Cancelar';
+
+  @override
+  String get watch_button => 'Assistir';
+
+  @override
+  String get more_info_button => 'Mais Info';
+
+  @override
+  String get no_movies_available => 'Nenhum filme disponível';
+
+  @override
+  String get movie_information_title => 'Informações do Filme';
+
+  @override
+  String get original_title_label => 'Título Original';
+
+  @override
+  String get release_date_label => 'Data de Lançamento';
+
+  @override
+  String get language_label => 'Idioma';
+
+  @override
+  String get popularity_label => 'Popularidade';
+
+  @override
+  String get content_rating_label => 'Classificação';
+
+  @override
+  String get adult_rating => 'Adulto';
+
+  @override
+  String get unknown_genre => 'Desconhecido';
+
+  @override
+  String get failed_to_load_avatars => 'Falha ao carregar avatares';
+
+  @override
+  String get failed_to_update_avatar => 'Falha ao atualizar o avatar';
+
+  @override
+  String get no_avatars_available => 'Nenhum avatar disponível';
+
+  @override
+  String get login_failed => 'Falha no login. Verifique suas credenciais.';
+
+  @override
+  String get validator_enter_email => 'Por favor, insira seu e-mail';
+
+  @override
+  String get validator_valid_email => 'Por favor, insira um e-mail válido';
+
+  @override
+  String get validator_enter_password => 'Por favor, insira sua senha';
+
+  @override
+  String get validator_password_length =>
+      'A senha deve ter no mínimo 6 caracteres';
+
+  @override
+  String get registration_failed =>
+      'Falha no cadastro. Por favor, tente novamente.';
+
+  @override
+  String get validator_enter_name => 'Por favor, insira seu nome';
+
+  @override
+  String get validator_name_length => 'O nome deve ter no mínimo 2 caracteres';
 }

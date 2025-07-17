@@ -11,11 +11,8 @@ class MovieProvider extends ChangeNotifier {
   List<Movie> _topRatedMovies = [];
   List<Movie> _nowPlayingMovies = [];
   List<Movie> _upcomingMovies = [];
-  // --- ADICIONADO ---
-  // Listas para armazenar o estado dos filmes por gênero
   List<Movie> _actionMovies = [];
   List<Movie> _comedyMovies = [];
-  // --------------------
 
   List<Movie> _searchResults = [];
   List<MovieHistoryEntry> _recentHistory = [];
