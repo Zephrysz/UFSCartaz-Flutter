@@ -33,10 +33,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-
+    
     return Scaffold(
-      // A cor do Scaffold pode ser definida pelo tema geral do app
-      // backgroundColor: Colors.black,
+      backgroundColor: Colors.black,
       body: Consumer<MovieProvider>(
         builder: (context, movieProvider, child) {
           if (movieProvider.isLoadingDetails) {
@@ -46,9 +45,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           final movie = movieProvider.selectedMovie;
           if (movie == null) {
             return Scaffold(
+              backgroundColor: Colors.black,
               appBar: AppBar(
+                backgroundColor: const Color(0xFF1A1A1A),
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
                     if (context.canPop()) {
                       context.pop();
@@ -62,15 +63,15 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.error_outline,
                       size: 64,
-                      color: theme.colorScheme.error,
+                      color: Color(0xFFE53E3E),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       l10n.movie_not_found,
-                      style: theme.textTheme.titleLarge,
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ],
                 ),
@@ -83,8 +84,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
               SliverAppBar(
                 expandedHeight: 300,
                 pinned: true,
+                backgroundColor: const Color(0xFF1A1A1A),
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
                     if (context.canPop()) {
                       context.pop();
@@ -155,18 +157,18 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(movie.title, style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                                Text(movie.title, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
                                 const SizedBox(height: 8),
                                 if (movie.releaseYear.isNotEmpty)
-                                  Text(movie.releaseYear, style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.7))),
+                                  Text(movie.releaseYear, style: const TextStyle(color: Colors.white70, fontSize: 16)),
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
                                     const Icon(Icons.star, color: Colors.amber, size: 20),
                                     const SizedBox(width: 4),
-                                    Text(l10n.rating(movie.voteAverage), style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
+                                    Text(l10n.rating(movie.voteAverage), style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
                                     const SizedBox(width: 8),
-                                    Text('(${movie.voteCount})', style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.7))),
+                                    Text('(${movie.voteCount})', style: const TextStyle(color: Colors.white70, fontSize: 12)),
                                   ],
                                 ),
                                 const SizedBox(height: 16),
@@ -187,11 +189,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                         ],
                       ),
                       const SizedBox(height: 24),
-                      Text(l10n.overview_title, style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+                      Text(l10n.overview_title, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       Text(
                         movie.overview.isNotEmpty ? movie.overview : l10n.no_overview_available,
-                        style: theme.textTheme.bodyMedium?.copyWith(height: 1.5),
+                        style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.5),
                       ),
                       const SizedBox(height: 24),
                       _buildInfoSection(l10n, theme, movie),
@@ -208,31 +210,34 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
   Widget _buildInfoSection(AppLocalizations l10n, ThemeData theme, Movie movie) {
     return Card(
+      color: const Color(0xFF2D2D2D),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n.movie_information_title, // Substituído
-              style: theme.textTheme.titleMedium?.copyWith(
+              l10n.movie_information_title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
-            _buildInfoRow(l10n.original_title_label, movie.originalTitle, theme), // Substituído
-            _buildInfoRow(l10n.release_date_label, movie.releaseDate, theme), // Substituído
-            _buildInfoRow(l10n.language_label, movie.originalLanguage.toUpperCase(), theme), // Substituído
-            _buildInfoRow(l10n.popularity_label, movie.popularity.toStringAsFixed(1), theme), // Substituído
+            _buildInfoRow(l10n.original_title_label, movie.originalTitle),
+            _buildInfoRow(l10n.release_date_label, movie.releaseDate),
+            _buildInfoRow(l10n.language_label, movie.originalLanguage.toUpperCase()),
+            _buildInfoRow(l10n.popularity_label, movie.popularity.toStringAsFixed(1)),
             if (movie.adult)
-              _buildInfoRow(l10n.content_rating_label, l10n.adult_rating, theme), // Substituído
+              _buildInfoRow(l10n.content_rating_label, l10n.adult_rating),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value, ThemeData theme) {
+  Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -242,16 +247,20 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
             width: 120,
             child: Text(
               label,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: Colors.white70,
+                fontSize: 14,
               ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: theme.textTheme.bodyMedium,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
             ),
           ),
         ],
