@@ -1,6 +1,13 @@
 # UFSCartaz Flutter
 
-App Flutter para cartazes da UFS.
+App Flutter para cartazes de filmes UFS.
+
+## Integrantes
+
+Grupo 4) \
+Arthur Braga da Fonseca - 811461 \
+William Tsuyoshi Matsuda - 812305 \
+Pedro Vinícius Guandalini Vicente - 812124 
 
 ## Como executar
 
