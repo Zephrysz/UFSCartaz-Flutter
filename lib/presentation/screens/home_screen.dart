@@ -105,17 +105,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         backgroundColor: const Color(0xFF1A1A1A),
         elevation: 0,
         title: _isSearching
-            ? TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: l10n.search_placeholder, // Substituído
-            border: InputBorder.none,
-            hintStyle: const TextStyle(color: Colors.white70),
-          ),
-          style: const TextStyle(color: Colors.white),
-          onChanged: _onSearchChanged,
-          autofocus: true,
-        )
+            ? Container(
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: l10n.search_placeholder,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Color(0xFFE53E3E), width: 2),
+                  ),
+                  filled: true,
+                  fillColor: const Color(0xFF2D2D2D),
+                  hintStyle: const TextStyle(color: Colors.white70),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                ),
+                style: const TextStyle(color: Colors.white),
+                onChanged: _onSearchChanged,
+                autofocus: true,
+              ),
+            )
             : Consumer<AuthProvider>(
           builder: (context, authProvider, child) {
             // Usa a string de saudação com o nome do usuário ou um padrão
