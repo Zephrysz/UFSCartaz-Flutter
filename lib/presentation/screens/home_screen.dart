@@ -106,8 +106,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         elevation: 0,
         title: _isSearching
             ? Container(
-              height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              height: 48,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
