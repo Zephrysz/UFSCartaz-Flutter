@@ -73,6 +73,15 @@ dev_dependencies:
   retrofit_generator: ^8.2.1
   json_serializable: ^6.8.0
 
+  # Testing dependencies
+  mockito: ^5.4.4
+  mocktail: ^1.0.4
+  bloc_test: ^9.1.7
+  golden_toolkit: ^0.15.0
+  integration_test:
+    sdk: flutter
+  patrol: ^3.12.0
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
