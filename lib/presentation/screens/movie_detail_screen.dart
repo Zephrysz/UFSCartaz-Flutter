@@ -39,7 +39,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
       body: Consumer<MovieProvider>(
         builder: (context, movieProvider, child) {
           if (movieProvider.isLoadingDetails) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: Color(0xFFE53E3E)));
           }
 
           final movie = movieProvider.selectedMovie;
@@ -106,7 +106,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
                           color: theme.colorScheme.surface,
-                          child: const Center(child: CircularProgressIndicator()),
+                          child: const Center(child: CircularProgressIndicator(color: Color(0xFFE53E3E))),
                         ),
                         errorWidget: (context, url, error) => Container(
                           color: theme.colorScheme.surface,
@@ -144,7 +144,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(
                                 width: 120, height: 180, color: theme.colorScheme.surface,
-                                child: const Center(child: CircularProgressIndicator()),
+                                child: const Center(child: CircularProgressIndicator(color: Color(0xFFE53E3E))),
                               ),
                               errorWidget: (context, url, error) => Container(
                                 width: 120, height: 180, color: theme.colorScheme.surface,
