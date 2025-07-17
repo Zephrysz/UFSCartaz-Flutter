@@ -177,7 +177,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                                     final genreName = _getGenreName(genreId, l10n);
                                     return Chip(
                                       label: Text(genreName, style: theme.textTheme.bodySmall?.copyWith(color: Colors.white)),
-                                      backgroundColor: const Color(0xFFE53E3E).withOpacity(0.2),
+                                      backgroundColor: const Color(0xFFE53E3E).withOpacity(0.8),
                                     );
                                   }).toList(),
                                 ),
