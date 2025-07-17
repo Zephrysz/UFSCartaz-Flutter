@@ -7,6 +7,8 @@ import '../providers/movie_provider.dart';
 import '../providers/theme_provider.dart';
 import '../widgets/movie_list.dart';
 import '../../data/models/movie.dart';
+// ADICIONADO: Import para o modelo MovieHistoryEntry
+import '../../data/models/movie_history_entry.dart';
 import '../../core/constants/app_constants.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -91,28 +93,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        //... seu AppBar (sem alterações)
         backgroundColor: const Color(0xFF1A1A1A),
         elevation: 0,
         title: _isSearching
             ? TextField(
-                controller: _searchController,
-                decoration: const InputDecoration(
-                  hintText: 'Para você, Lucas',
-                  border: InputBorder.none,
-                  hintStyle: TextStyle(color: Colors.white70),
-                ),
-                style: const TextStyle(color: Colors.white),
-                onChanged: _onSearchChanged,
-                autofocus: true,
-              )
+          controller: _searchController,
+          decoration: const InputDecoration(
+            hintText: 'Para você, Lucas',
+            border: InputBorder.none,
+            hintStyle: TextStyle(color: Colors.white70),
+          ),
+          style: const TextStyle(color: Colors.white),
+          onChanged: _onSearchChanged,
+          autofocus: true,
+        )
             : Consumer<AuthProvider>(
-                builder: (context, authProvider, child) {
-                  return Text(
-                    'Para você, ${authProvider.currentUser?.name ?? 'Lucas'}',
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  );
-                },
-              ),
+          builder: (context, authProvider, child) {
+            return Text(
+              'Para você, ${authProvider.currentUser?.name ?? 'Lucas'}',
+              style: const TextStyle(color: Colors.white, fontSize: 18),
+            );
+          },
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -132,28 +135,28 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     backgroundColor: const Color(0xFFE53E3E),
                     child: authProvider.currentUser?.avatarUrl != null
                         ? ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl: authProvider.currentUser!.avatarUrl!,
-                              fit: BoxFit.cover,
-                              width: 36,
-                              height: 36,
-                              placeholder: (context, url) => const Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              errorWidget: (context, url, error) => const Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                          )
+                      child: CachedNetworkImage(
+                        imageUrl: authProvider.currentUser!.avatarUrl!,
+                        fit: BoxFit.cover,
+                        width: 36,
+                        height: 36,
+                        placeholder: (context, url) => const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    )
                         : const Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: 20,
-                          ),
+                      Icons.person,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                 ),
               );
@@ -178,6 +181,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 20),
+                      // Historico section
+                      if (movieProvider.recentHistory.isNotEmpty)
+                        _buildHistorySection(
+                          'Vistos Recentemente',
+                          movieProvider.recentHistory,
+                        ),
                       // All Movies section
                       _buildMovieSection(
                         'All Movies',
@@ -218,6 +227,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildFeaturedSection(MovieProvider movieProvider) {
+    //... sem alterações nesta função
     if (movieProvider.isLoading) {
       return Container(
         height: 200,
@@ -324,7 +334,92 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
+  // CORRIGIDO: O tipo de 'history' agora é reconhecido
+  Widget _buildHistorySection(String title, List<MovieHistoryEntry> history) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 180, // Altura da lista horizontal
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: history.length,
+            itemBuilder: (context, index) {
+              final entry = history[index];
+              // CORRIGIDO: Objeto Movie criado com todos os parâmetros obrigatórios
+              final movieFromHistory = Movie(
+                id: entry.movieId,
+                title: entry.movieTitle,
+                originalTitle: entry.movieTitle, // Usando movieTitle como fallback
+                overview: '', // Fornecendo valor padrão
+                posterPath: entry.moviePosterPath,
+                backdropPath: entry.moviePosterPath, // Usando poster como fallback
+                releaseDate: '', // Fornecendo valor padrão
+                voteAverage: 0.0, // Fornecendo valor padrão
+                genreIds: [], // Fornecendo valor padrão
+                adult: false, // Fornecendo valor padrão
+                originalLanguage: '', // Fornecendo valor padrão
+                popularity: 0.0, // Fornecendo valor padrão
+                video: false, // Fornecendo valor padrão
+                voteCount: 0, // Fornecendo valor padrão
+              );
+
+              return Padding(
+                padding: EdgeInsets.only(
+                  left: index == 0 ? 16.0 : 8.0,
+                  right: index == history.length - 1 ? 16.0 : 0,
+                ),
+                child: GestureDetector(
+                  onTap: () => _onMovieTap(movieFromHistory),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0),
+                        child: CachedNetworkImage(
+                          imageUrl: entry.fullPosterUrl,
+                          width: 120,
+                          height: 180,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            width: 120,
+                            height: 180,
+                            color: Colors.grey[800],
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            width: 120,
+                            height: 180,
+                            color: Colors.grey[800],
+                            child: const Icon(Icons.movie, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
   Widget _buildSearchResults(MovieProvider movieProvider) {
+    //... sem alterações nesta função
     if (movieProvider.isSearching) {
       return const Center(
         child: CircularProgressIndicator(
@@ -365,6 +460,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildMovieSection(String title, List<Movie> movies, bool isLoading) {
+    //... sem alterações nesta função
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
